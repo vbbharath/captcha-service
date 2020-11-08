@@ -1,0 +1,209 @@
+{
+	"info": {
+		"_postman_id": "f99c1f3d-bec3-428a-adaa-782547eed039",
+		"name": "Test collection for Captcha service",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Request question - Confirm status code is 200",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "7c0ec252-4f84-4762-b842-94272dac54e8",
+						"exec": [
+							"pm.test(\"Request question - Confirm status code is 200\", function() {",
+							"    pm.response.to.have.status(200);",
+							"",
+							"    var jsonData = JSON.parse(responseBody);",
+							"    postman.setEnvironmentVariable(\"question\", jsonData.question);",
+							"    postman.setEnvironmentVariable(\"token\", jsonData.token);",
+							"",
+							"    var numbersStr = jsonData.question.substring(23,jsonData.question.length);",
+							"    ",
+							"    var total = Number(\"0\");",
+							"    var nos = numbersStr.split(',');",
+							"       for(var j = 0; j < nos.length; j++){",
+							"           total += parseInt(nos[j]);",
+							"       }",
+							"    postman.setEnvironmentVariable(\"total\", total);",
+							"    pm.test(responseBody, true);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/rest/v1/question",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"rest",
+						"v1",
+						"question"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Respond to question - Correct Response",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "ef2f1e89-0310-4c4e-96dc-9aecc28903f8",
+						"exec": [
+							"pm.test(\"Respond to question - Correct Response\", function () {",
+							"  pm.response.to.have.status(200);",
+							"  pm.test(pm.request.body);",
+							"  pm.test(responseBody);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"question\": \"{{question}}\",\n    \"answer\":{{total}},\n    \"token\": \"{{token}}\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/rest/v1/question",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"rest",
+						"v1",
+						"question"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Respond to question - Incorrect Response",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "321b0b0c-ed9b-472c-a754-2a5753ad65d0",
+						"exec": [
+							"pm.test(\"Respond to question - Incorrect Response\", function () {",
+							"  pm.response.to.have.status(400);",
+							"  pm.test(pm.request.body);",
+							"  pm.test(responseBody);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"question\": \"{{question}}\",\n    \"answer\":-1,\n    \"token\": \"{{token}}\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/rest/v1/question",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"rest",
+						"v1",
+						"question"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Respond to question - Modify the question",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "c1e4839e-5f4a-4ce0-b359-f056b07f0508",
+						"exec": [
+							"pm.test(\"Respond to question - Modify the question\", function () {",
+							"  pm.response.to.have.status(500);",
+							"  pm.test(pm.request.body);",
+							"  pm.test(responseBody);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"question\": \"Please sum the numbers 1,2,3,4,5,6\",\n    \"answer\":21,\n    \"token\": \"{{token}}\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/rest/v1/question",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"rest",
+						"v1",
+						"question"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"protocolProfileBehavior": {}
+}
